@@ -7,10 +7,7 @@ export const calculateTax = (amount, taxRate) => {
     return amount + (amount * taxRate);
 };
 
-export const applyPercentageDiscount = (amount, discountPercentage) => {
-    if (discountPercentage < 0 || discountPercentage > 1) {
-        throw new Error("Discount percentage must be between 0 and 1.");
-    }
-    const newTotal = amount - (amount * discountPercentage);
+export const applyDiscount = (amount, discount) => {
+    const newTotal = amount - discount;
     return newTotal < 0 ? 0 : newTotal;
 };
