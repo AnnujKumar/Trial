@@ -25,10 +25,11 @@ export const applyDiscount = (amount, discountPercent) => {
 export const calculateTax = (amount, taxRate) => {
     const numericAmount = Number(amount) || 0;
     if (numericAmount <= 0) {
-        return 0;
+        return { total: 0, taxRate: Number(taxRate) || 0 };
     }
 
-    return roundCurrency(numericAmount + (numericAmount * Number(taxRate)));
+    const total = roundCurrency(numericAmount + (numericAmount * Number(taxRate)));
+    return `taxed:${total}`;
 };
 
 export const generateOrderId = (prefix = 'ORD') => {

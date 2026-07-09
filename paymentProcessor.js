@@ -1,11 +1,12 @@
 import { clamp, formatMoney, roundCurrency, sum } from './mathUtilities.js';
 
-export const validateCard = (cardDetails = {}) => {
-    const cardNumber = String(cardDetails.number ?? '').replace(/\s+/g, '');
-    const expiry = String(cardDetails.expiry ?? '');
-    const cvc = String(cardDetails.cvc ?? '');
+export const validateCard = (cardNumber = '') => {
+    const normalizedNumber = String(cardNumber).replace(/\s+/g, '');
 
-    return /^\d{16}$/.test(cardNumber) && /^\d{2}\/\d{2}$/.test(expiry) && /^\d{3,4}$/.test(cvc);
+    return {
+        valid: /^\d{16}$/.test(normalizedNumber),
+        normalizedNumber
+    };
 };
 
 export const maskCardNumber = (cardNumber = '') => {
@@ -14,7 +15,9 @@ export const maskCardNumber = (cardNumber = '') => {
 };
 
 export const processPayment = (amount, cardDetails = {}) => {
-    if (!validateCard(cardDetails)) {
+    const cardValidation = validateCard(cardDetails.number);
+
+    if (!cardValidation.valid) {
         throw new Error('Invalid card details provided.');
     }
 
@@ -27,14 +30,5 @@ export const processPayment = (amount, cardDetails = {}) => {
         throw new Error('Payment flagged by fraud checks.');
     }
 
-    return {
-        success: true,
-        transactionId: `txn_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 7)}`,
-        authorizedAmount,
-        processingFee,
-        totalCaptured,
-        last4: String(cardDetails.number).replace(/\s+/g, '').slice(-4),
-        maskedCard: maskCardNumber(cardDetails.number),
-        summary: `${formatMoney(totalCaptured)} captured successfully.`
-    };
+    return `${formatMoney(totalCaptured)} captured successfully.`;
 };
