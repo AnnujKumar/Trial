@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Northstar Market | Sample Ecommerce Studio</title>
+    <meta name="description" content="A sample ecommerce storefront built as a multi-file dependency graph for PR impact analysis.">
+    <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+    <div class="page-backdrop"></div>
+    <div class="page-glow page-glow--left"></div>
+    <div class="page-glow page-glow--right"></div>
+
+    <header class="topbar">
+        <div>
+            <p class="eyebrow">Sample ecommerce system</p>
+            <h1>Northstar Market</h1>
+        </div>
+        <div class="topbar__actions">
+            <div class="topbar__search">
+                <label class="sr-only" for="search-input">Search products</label>
+                <input id="search-input" data-search-input type="search" placeholder="Search jackets, lamps, sneakers...">
+            </div>
+            <div class="cart-pill">Cart <span data-cart-count>0</span></div>
+        </div>
+    </header>
+
+    <main class="shell">
+        <section class="hero panel">
+            <div class="hero__copy">
+                <p class="eyebrow">Multi-file storefront demo</p>
+                <h2>Cross-functional ecommerce flows with real import chains.</h2>
+                <p>This storefront includes product search, catalog filtering, cart persistence, pricing, shipping, payment simulation, and checkout orchestration.</p>
+                <div class="hero__actions">
+                    <a class="button button--primary" href="#catalog">Browse catalog</a>
+                    <button class="button button--ghost" type="button" data-clear-cart>Reset cart</button>
+                </div>
+            </div>
+            <div class="hero__stats" data-hero-stats></div>
+        </section>
+
+        <section class="collection-strip" data-featured-strip></section>
+
+        <section class="layout">
+            <div class="layout__main">
+                <section class="panel">
+                    <div class="section-heading">
+                        <div>
+                            <p class="eyebrow">Collections</p>
+                            <h3>Curated purchase paths</h3>
+                        </div>
+                    </div>
+                    <div class="collection-cards" data-collection-strip></div>
+                </section>
+
+                <section class="panel" id="catalog">
+                    <div class="section-heading">
+                        <div>
+                            <p class="eyebrow">Catalog</p>
+                            <h3>Discover products</h3>
+                        </div>
+                        <div class="filter-row">
+                            <label>
+                                Sort
+                                <select data-sort-select>
+                                    <option value="featured">Featured</option>
+                                    <option value="rating">Top rated</option>
+                                    <option value="price-asc">Price low to high</option>
+                                    <option value="price-desc">Price high to low</option>
+                                </select>
+                            </label>
+                            <label>
+                                Max price
+                                <output data-price-label></output>
+                                <input data-price-range type="range" min="20" max="250" step="5" value="250">
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="category-rail" data-category-rail></div>
+                    <div class="catalog-grid" data-catalog-grid data-catalog-actions></div>
+                </section>
+            </div>
+
+            <aside class="layout__sidebar">
+                <section class="panel panel--sticky">
+                    <div class="section-heading">
+                        <div>
+                            <p class="eyebrow">Cart</p>
+                            <h3>Order summary</h3>
+                        </div>
+                        <strong class="cart-pill cart-pill--inline" data-cart-subtotal>$0.00</strong>
+                    </div>
+                    <div class="cart-stack" data-cart-items></div>
+                    <div class="summary-block">
+                        <div class="summary-line summary-line--total">
+                            <span>Checkout total</span>
+                            <strong data-checkout-total>$0.00</strong>
+                        </div>
+                        <div data-checkout-breakdown></div>
+                    </div>
+                    <div class="notice-stack" data-checkout-warnings></div>
+                </section>
+
+                <section class="panel">
+                    <div class="section-heading">
+                        <div>
+                            <p class="eyebrow">Checkout</p>
+                            <h3>Payment details</h3>
+                        </div>
+                    </div>
+
+                    <form class="checkout-form" data-checkout-form>
+                        <label>
+                            Name
+                            <input name="name" value="Avery Stone">
+                        </label>
+                        <label>
+                            Email
+                            <input name="email" value="avery@example.com" type="email">
+                        </label>
+                        <label>
+                            Shipping address
+                            <textarea name="address" rows="3">112 Harbor Lane, Portland, OR</textarea>
+                        </label>
+                        <div class="form-grid">
+                            <label>
+                                Card number
+                                <input name="cardNumber" value="4242424242424242" inputmode="numeric">
+                            </label>
+                            <label>
+                                Expiry
+                                <input name="cardExpiry" value="12/28" placeholder="MM/YY">
+                            </label>
+                            <label>
+                                CVC
+                                <input name="cardCvc" value="123" inputmode="numeric">
+                            </label>
+                            <label>
+                                Card holder
+                                <input name="cardHolder" value="Avery Stone">
+                            </label>
+                        </div>
+                        <label>
+                            Coupon code
+                            <input name="couponCode" data-coupon-input value="SAVE10" placeholder="SAVE10">
+                        </label>
+                        <label>
+                            Shipping option
+                            <select name="shippingOption" data-shipping-select>
+                                <option value="standard">Standard</option>
+                                <option value="express">Express</option>
+                                <option value="overnight">Overnight</option>
+                            </select>
+                        </label>
+                        <label>
+                            Notes
+                            <textarea name="notes" rows="3" placeholder="Gift wrap, delivery instructions, etc."></textarea>
+                        </label>
+                        <button class="button button--primary button--full" type="submit">Complete order</button>
+                    </form>
+                </section>
+
+                <section class="panel">
+                    <div class="section-heading">
+                        <div>
+                            <p class="eyebrow">Inventory</p>
+                            <h3>Stock monitor</h3>
+                        </div>
+                    </div>
+                    <div class="notice-stack" data-inventory-feed></div>
+                </section>
+
+                <section class="panel">
+                    <div class="section-heading">
+                        <div>
+                            <p class="eyebrow">Recommendations</p>
+                            <h3>Frequently paired items</h3>
+                        </div>
+                    </div>
+                    <div class="recommendation-stack" data-recommendations></div>
+                    <div class="receipt-stack" data-receipt></div>
+                </section>
+            </aside>
+        </section>
+    </main>
+
+    <script type="module" src="./app.js"></script>
+</body>
+</html>

@@ -1,30 +1,54 @@
+import { generateOrderId, roundCurrency } from './mathUtilities.js';
 import { processPayment } from './paymentProcessor.js';
-import { applyDiscount } from './mathUtils.js';
+import { buildPricingBreakdown } from './services/pricingService.js';
+import { canFulfillCart, getInventoryWarnings } from './services/inventoryService.js';
+import { getShippingOptions } from './services/shippingService.js';
+import { getRecommendedProducts } from './services/recommendationService.js';
 
-export class CheckoutService {
-    constructor(cartTotal) {
-        this.cartTotal = cartTotal;
+export const prepareCheckout = (cartItems = [], { couponCode = '', shippingOption = 'standard' } = {}) => {
+    const shippingOptions = getShippingOptions(cartItems);
+    const selectedShipping = shippingOptions.find((option) => option.id === shippingOption) ?? shippingOptions[0];
+    const pricing = buildPricingBreakdown(cartItems, {
+        couponCode,
+        shippingCost: selectedShipping?.cost ?? 0
+    });
+
+    return {
+        pricing,
+        shippingOptions,
+        selectedShipping,
+        recommendations: getRecommendedProducts(cartItems),
+        inventoryWarnings: getInventoryWarnings(cartItems),
+        canProceed: canFulfillCart(cartItems) && roundCurrency(pricing.total) > 0
+    };
+};
+
+export const finalizeOrder = ({
+    cartItems = [],
+    couponCode = '',
+    shippingOption = 'standard',
+    customer = {},
+    cardDetails = {},
+    notes = ''
+} = {}) => {
+    const checkoutState = prepareCheckout(cartItems, { couponCode, shippingOption });
+
+    if (!checkoutState.canProceed) {
+        const firstWarning = checkoutState.inventoryWarnings[0];
+        throw new Error(firstWarning?.message ?? 'Unable to complete checkout.');
     }
 
-    finalizeOrder(couponCode, cardDetails) {
-        let currentTotal = this.cartTotal;
-        
-        if (couponCode === 'SAVE20') {
-            // AST needs to catch this direct call to mathUtils
-            currentTotal = applyDiscount(this.cartTotal, 20);
-        }
-        
-        try {
-            // AST needs to catch this call to paymentProcessor, 
-            // which internally calls mathUtils.
-            const paymentResult = processPayment(currentTotal, cardDetails);
-            
-            if (paymentResult.success) {
-                return { status: "COMPLETED", id: paymentResult.transactionId };
-            }
-        } catch (error) {
-            console.error("Checkout failed:", error.message);
-            return { status: "FAILED", reason: error.message };
-        }
-    }
-}
+    const paymentResult = processPayment(checkoutState.pricing.total, cardDetails);
+
+    return {
+        status: 'COMPLETED',
+        orderId: generateOrderId(),
+        paymentResult,
+        customer,
+        notes,
+        pricing: checkoutState.pricing,
+        shipping: checkoutState.selectedShipping,
+        items: cartItems,
+        completedAt: new Date().toISOString()
+    };
+};
