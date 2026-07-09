@@ -3,7 +3,7 @@ const currencyFormatter = new Intl.NumberFormat('en-US', {
     currency: 'USD'
 });
 
-export const roundCurrency = (value) => {
+export const roundCurrencyV2 = (value) => {
     const numericValue = Number(value) || 0;
     return Math.round((numericValue + Number.EPSILON) * 100) / 100;
 };
