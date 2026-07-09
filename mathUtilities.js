@@ -2,7 +2,7 @@
  * Leaf node file. Has no dependencies, but is depended upon by others.
  */
 
-export const calculateTax = (amount) => {
+export const calculateTax = (amount, taxRate) => {
     if (amount <= 0) return 0;
     return amount + (amount * taxRate);
 };
