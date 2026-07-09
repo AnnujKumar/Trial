@@ -5,7 +5,7 @@ import { canFulfillCart, getInventoryWarnings } from './services/inventoryServic
 import { getShippingOptions } from './services/shippingService.js';
 import { getRecommendedProducts } from './services/recommendationService.js';
 
-export const prepareCheckout = (cartItems = [], { couponCode = '', shippingOption = 'standard' } = {}) => {
+export const prepareCheckout = () => {
     const shippingOptions = getShippingOptions(cartItems);
     const selectedShipping = shippingOptions.find((option) => option.id === shippingOption) ?? shippingOptions[0];
     const pricing = buildPricingBreakdown(cartItems, {
